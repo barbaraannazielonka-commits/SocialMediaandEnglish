@@ -1,0 +1,1400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Language Evolved — Social Media & English</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --surface: #13131a;
+    --surface2: #1c1c28;
+    --accent: #00e5ff;
+    --accent2: #ff3cac;
+    --accent3: #7b2fff;
+    --text: #e8e8f0;
+    --text-dim: #8888a8;
+    --border: #2a2a3a;
+    --nav-bg: rgba(10,10,15,0.92);
+    --shadow: 0 4px 24px rgba(0,0,0,0.3);
+  }
+  body.light {
+    --bg: #f5f4f0;
+    --surface: #ffffff;
+    --surface2: #eceae4;
+    --accent: #0070c0;
+    --accent2: #c2006b;
+    --accent3: #5a1fd1;
+    --text: #111118;
+    --text-dim: #555568;
+    --border: #d8d6ce;
+    --nav-bg: rgba(245,244,240,0.95);
+    --shadow: 0 4px 24px rgba(0,0,0,0.10);
+  }
+  body.light .hero-glow {
+    background: radial-gradient(circle, rgba(0,112,192,0.12) 0%, transparent 70%);
+  }
+  body.light .hero-glow2 {
+    background: radial-gradient(circle, rgba(194,0,107,0.10) 0%, transparent 70%);
+  }
+  body.light .hero-grid { opacity: 0.07; }
+  body.light .stats-bar { background: var(--surface2); }
+  body.light .article-thumb { filter: brightness(1.1); }
+  body.light .timeline::before {
+    background: linear-gradient(to bottom, #0070c0, #5a1fd1, #c2006b);
+  }
+  body.light .timeline-dot { background: #0070c0; box-shadow: 0 0 12px rgba(0,112,192,0.35); }
+  body.light .vocab-card:hover { border-color: #5a1fd1; }
+  body.light .card:hover { border-color: rgba(0,112,192,0.4); }
+  body.light .podcast-card:hover { border-color: rgba(0,112,192,0.4); }
+  body.light .article-card:hover { border-color: rgba(0,112,192,0.3); }
+  body.light .badge-cyan { background: rgba(0,112,192,0.1); color: #0070c0; border-color: rgba(0,112,192,0.25); }
+  body.light .badge-green { background: rgba(0,140,60,0.1); color: #007a30; border-color: rgba(0,140,60,0.2); }
+  body.light .badge-purple { background: rgba(90,31,209,0.1); color: #5a1fd1; border-color: rgba(90,31,209,0.25); }
+  body.light .badge-pink { background: rgba(194,0,107,0.1); color: #c2006b; border-color: rgba(194,0,107,0.2); }
+  body.light .styled-table th { background: var(--surface2); }
+  body.light footer { background: var(--surface2); }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    font-size: 16px;
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    background: var(--nav-bg);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 2rem;
+    display: flex; align-items: center; justify-content: space-between;
+    height: 60px;
+  }
+  .nav-logo {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 1.1rem;
+    color: var(--accent);
+    text-decoration: none;
+    letter-spacing: -0.02em;
+  }
+  .nav-logo span { color: var(--accent2); }
+  .nav-links { display: flex; gap: 0.2rem; list-style: none; }
+  .nav-links a {
+    color: var(--text-dim);
+    text-decoration: none;
+    font-size: 0.82rem;
+    font-weight: 500;
+    padding: 0.4rem 0.75rem;
+    border-radius: 6px;
+    transition: all 0.2s;
+    font-family: 'Space Mono', monospace;
+  }
+  .nav-links a:hover, .nav-links a.active {
+    color: var(--accent);
+    background: rgba(0,229,255,0.08);
+  }
+  .theme-toggle {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    border-radius: 8px;
+    padding: 0.35rem 0.6rem;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.2s, border-color 0.2s;
+    line-height: 1;
+  }
+  .theme-toggle:hover { border-color: var(--accent); background: var(--surface); }
+  .hamburger { display: none; cursor: pointer; color: var(--text); font-size: 1.4rem; }
+
+  /* PAGE SYSTEM */
+  .page { display: none; padding-top: 60px; min-height: 100vh; }
+  .page.active { display: block; }
+
+  /* HERO */
+  .hero {
+    min-height: calc(100vh - 60px);
+    display: flex; flex-direction: column; justify-content: center;
+    padding: 4rem 2rem;
+    position: relative; overflow: hidden;
+  }
+  .hero-grid {
+    position: absolute; inset: 0; opacity: 0.04;
+    background-image: linear-gradient(var(--border) 1px, transparent 1px),
+      linear-gradient(90deg, var(--border) 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
+  .hero-glow {
+    position: absolute; width: 600px; height: 600px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(0,229,255,0.12) 0%, transparent 70%);
+    top: -100px; right: -100px; pointer-events: none;
+  }
+  .hero-glow2 {
+    position: absolute; width: 400px; height: 400px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255,60,172,0.1) 0%, transparent 70%);
+    bottom: -50px; left: -50px; pointer-events: none;
+  }
+  .hero-inner { max-width: 900px; margin: 0 auto; position: relative; z-index: 1; }
+  .hero-tag {
+    display: inline-block;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--accent);
+    background: rgba(0,229,255,0.1);
+    border: 1px solid rgba(0,229,255,0.25);
+    padding: 0.35rem 0.8rem;
+    border-radius: 100px;
+    margin-bottom: 1.5rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(2.8rem, 7vw, 5.5rem);
+    font-weight: 800;
+    line-height: 1.0;
+    letter-spacing: -0.03em;
+    margin-bottom: 1.5rem;
+  }
+  h1 .hl { color: var(--accent); }
+  h1 .hl2 { color: var(--accent2); }
+  .hero-sub {
+    font-size: 1.15rem;
+    color: var(--text-dim);
+    max-width: 600px;
+    margin-bottom: 2.5rem;
+    font-weight: 300;
+  }
+  .btn-row { display: flex; gap: 1rem; flex-wrap: wrap; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.82rem;
+    font-weight: 700;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.2s;
+    border: none;
+  }
+  .btn-primary {
+    background: var(--accent);
+    color: #0a0a0f;
+  }
+  .btn-primary:hover { background: #33eaff; transform: translateY(-2px); }
+  .btn-secondary {
+    background: transparent;
+    color: var(--text);
+    border: 1px solid var(--border);
+  }
+  .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* STATS TICKER */
+  .stats-bar {
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    padding: 1rem 0;
+    overflow: hidden;
+    position: relative;
+  }
+  .stats-ticker {
+    display: flex; gap: 4rem;
+    animation: ticker 30s linear infinite;
+    width: max-content;
+  }
+  @keyframes ticker { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+  .stat-item {
+    display: flex; align-items: center; gap: 1rem;
+    white-space: nowrap;
+    font-family: 'Space Mono', monospace;
+  }
+  .stat-num { font-size: 1.4rem; font-weight: 700; color: var(--accent); }
+  .stat-label { font-size: 0.75rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.05em; }
+
+  /* CONTENT AREAS */
+  .container { max-width: 1100px; margin: 0 auto; padding: 0 2rem; }
+  .section { padding: 5rem 0; }
+  h2 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(1.8rem, 4vw, 2.8rem);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    margin-bottom: 0.5rem;
+  }
+  h2 .accent { color: var(--accent); }
+  h2 .accent2 { color: var(--accent2); }
+  h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+  }
+  .section-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--accent2);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 0.5rem;
+  }
+  .section-intro { color: var(--text-dim); max-width: 640px; margin-bottom: 3rem; font-size: 1.05rem; }
+
+  /* CARDS GRID */
+  .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem; }
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.75rem;
+    transition: all 0.25s;
+    position: relative;
+    overflow: hidden;
+  }
+  .card::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 2px;
+    background: linear-gradient(90deg, var(--accent), var(--accent3));
+    opacity: 0;
+    transition: opacity 0.25s;
+  }
+  .card:hover { border-color: rgba(0,229,255,0.3); transform: translateY(-3px); }
+  .card:hover::before { opacity: 1; }
+  .card-tag {
+    display: inline-block;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--accent2);
+    background: rgba(255,60,172,0.1);
+    border: 1px solid rgba(255,60,172,0.2);
+    padding: 0.2rem 0.6rem;
+    border-radius: 100px;
+    margin-bottom: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  .card p { color: var(--text-dim); font-size: 0.9rem; line-height: 1.65; }
+  .card-link {
+    display: inline-flex; align-items: center; gap: 0.4rem;
+    color: var(--accent);
+    text-decoration: none;
+    font-size: 0.82rem;
+    font-family: 'Space Mono', monospace;
+    margin-top: 1rem;
+    transition: gap 0.2s;
+  }
+  .card-link:hover { gap: 0.7rem; }
+
+  /* ARTICLE LAYOUT */
+  .article-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
+  .article-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: all 0.25s;
+  }
+  .article-card:hover { border-color: rgba(0,229,255,0.3); transform: translateY(-3px); }
+  .article-thumb {
+    height: 140px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 3rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .article-body { padding: 1.5rem; }
+  .article-body p { color: var(--text-dim); font-size: 0.88rem; margin-top: 0.5rem; }
+  .article-meta {
+    display: flex; gap: 1rem; align-items: center;
+    margin-top: 1rem;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.68rem;
+    color: var(--text-dim);
+  }
+  .article-meta .tag {
+    background: rgba(123,47,255,0.15);
+    color: #a78bfa;
+    border: 1px solid rgba(123,47,255,0.25);
+    padding: 0.15rem 0.5rem;
+    border-radius: 4px;
+    text-transform: uppercase;
+  }
+
+  /* VOCAB */
+  .vocab-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 1rem; }
+  .vocab-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.25rem 1.5rem;
+    transition: border-color 0.2s;
+  }
+  .vocab-card:hover { border-color: var(--accent3); }
+  .vocab-word {
+    font-family: 'Space Mono', monospace;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 0.4rem;
+  }
+  .vocab-pos {
+    font-size: 0.7rem;
+    color: var(--accent2);
+    font-style: italic;
+    margin-bottom: 0.5rem;
+  }
+  .vocab-def { color: var(--text-dim); font-size: 0.85rem; }
+  .vocab-example {
+    margin-top: 0.5rem;
+    font-style: italic;
+    color: var(--text-dim);
+    font-size: 0.8rem;
+    border-left: 2px solid var(--accent3);
+    padding-left: 0.75rem;
+  }
+
+  /* TIMELINE */
+  .timeline { position: relative; padding-left: 2rem; }
+  .timeline::before {
+    content: '';
+    position: absolute; left: 0; top: 0; bottom: 0;
+    width: 2px;
+    background: linear-gradient(to bottom, var(--accent), var(--accent3), var(--accent2));
+  }
+  .timeline-item { position: relative; padding: 0 0 2.5rem 1.5rem; }
+  .timeline-dot {
+    position: absolute; left: -2.4rem; top: 0.3rem;
+    width: 12px; height: 12px; border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 12px rgba(0,229,255,0.5);
+  }
+  .timeline-year {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--accent2);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.4rem;
+  }
+  .timeline-item h3 { margin-bottom: 0.4rem; }
+  .timeline-item p { color: var(--text-dim); font-size: 0.9rem; }
+
+  /* PODCAST PAGE */
+  .podcast-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.75rem;
+    display: grid;
+    grid-template-columns: 80px 1fr;
+    gap: 1.5rem;
+    align-items: start;
+    transition: all 0.25s;
+    margin-bottom: 1.25rem;
+  }
+  .podcast-card:hover { border-color: rgba(0,229,255,0.3); }
+  .podcast-icon {
+    width: 80px; height: 80px; border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 2rem;
+    flex-shrink: 0;
+  }
+  .podcast-source {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.68rem;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.3rem;
+  }
+  .podcast-card h3 { font-size: 1.05rem; margin-bottom: 0.5rem; }
+  .podcast-card p { color: var(--text-dim); font-size: 0.88rem; margin-bottom: 1rem; }
+  .podcast-links { display: flex; gap: 0.75rem; flex-wrap: wrap; }
+  .pod-link {
+    display: inline-flex; align-items: center; gap: 0.35rem;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.72rem;
+    padding: 0.35rem 0.75rem;
+    border-radius: 6px;
+    text-decoration: none;
+    transition: all 0.2s;
+  }
+  .pod-link-primary {
+    background: rgba(0,229,255,0.1);
+    color: var(--accent);
+    border: 1px solid rgba(0,229,255,0.2);
+  }
+  .pod-link-primary:hover { background: rgba(0,229,255,0.2); }
+  .pod-link-secondary {
+    background: transparent;
+    color: var(--text-dim);
+    border: 1px solid var(--border);
+  }
+  .pod-link-secondary:hover { color: var(--text); border-color: var(--text-dim); }
+
+  /* CALLOUT BOX */
+  .callout {
+    background: var(--surface2);
+    border-left: 3px solid var(--accent);
+    border-radius: 0 10px 10px 0;
+    padding: 1.5rem 1.75rem;
+    margin: 2rem 0;
+  }
+  .callout.warn { border-left-color: var(--accent2); }
+  .callout.purple { border-left-color: var(--accent3); }
+  .callout-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--accent);
+    margin-bottom: 0.5rem;
+  }
+  .callout.warn .callout-label { color: var(--accent2); }
+  .callout.purple .callout-label { color: var(--accent3); }
+  .callout p { color: var(--text-dim); font-size: 0.92rem; }
+
+  /* TWO-COL */
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: start; }
+  .prose p { color: var(--text-dim); margin-bottom: 1.1rem; font-size: 0.95rem; line-height: 1.8; }
+  .prose p strong { color: var(--text); }
+
+  /* FUTURE / PREDICTION */
+  .prediction-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; }
+  .prediction-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.5rem;
+    text-align: center;
+  }
+  .prediction-card .icon { font-size: 2.2rem; margin-bottom: 1rem; }
+  .prediction-card h3 { font-size: 1rem; margin-bottom: 0.5rem; }
+  .prediction-card p { color: var(--text-dim); font-size: 0.82rem; }
+
+  /* DIVIDER */
+  .divider {
+    border: none;
+    height: 1px;
+    background: var(--border);
+    margin: 3rem 0;
+  }
+
+  /* FOOTER */
+  footer {
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    padding: 3rem 2rem;
+    text-align: center;
+    font-size: 0.82rem;
+    color: var(--text-dim);
+    font-family: 'Space Mono', monospace;
+  }
+  footer strong { color: var(--accent); }
+
+  /* MOBILE */
+  @media (max-width: 768px) {
+    .nav-links { display: none; }
+    .hamburger { display: block; }
+    .nav-links.open {
+      display: flex; flex-direction: column;
+      position: fixed; top: 60px; left: 0; right: 0;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 1rem;
+      z-index: 99;
+    }
+    .two-col, .article-grid, .prediction-grid { grid-template-columns: 1fr; }
+    .podcast-card { grid-template-columns: 1fr; }
+    .podcast-icon { display: none; }
+    h1 { font-size: 2.4rem; }
+  }
+
+  /* SCROLL FADE */
+  .fade-in { opacity: 0; transform: translateY(24px); transition: opacity 0.6s, transform 0.6s; }
+  .fade-in.visible { opacity: 1; transform: none; }
+
+  /* TABLE */
+  .styled-table { width: 100%; border-collapse: collapse; margin-top: 1.5rem; font-size: 0.88rem; }
+  .styled-table th {
+    background: var(--surface2);
+    color: var(--accent);
+    font-family: 'Space Mono', monospace;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 0.75rem 1rem;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+  .styled-table td {
+    padding: 0.85rem 1rem;
+    border-bottom: 1px solid rgba(42,42,58,0.6);
+    color: var(--text-dim);
+  }
+  .styled-table tr:hover td { background: rgba(255,255,255,0.02); color: var(--text); }
+  .styled-table td strong { color: var(--text); }
+
+  /* BADGE */
+  .badge {
+    display: inline-block;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    padding: 0.15rem 0.5rem;
+    border-radius: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+  .badge-green { background: rgba(0,255,150,0.1); color: #00ff96; border: 1px solid rgba(0,255,150,0.2); }
+  .badge-pink { background: rgba(255,60,172,0.1); color: var(--accent2); border: 1px solid rgba(255,60,172,0.2); }
+  .badge-cyan { background: rgba(0,229,255,0.1); color: var(--accent); border: 1px solid rgba(0,229,255,0.2); }
+  .badge-purple { background: rgba(123,47,255,0.15); color: #a78bfa; border: 1px solid rgba(123,47,255,0.3); }
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="javascript:void(0)" onclick="showPage('home')">Language<span>Evolved</span></a>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="javascript:void(0)" onclick="showPage('home')" class="active" id="nav-home">🏠 Home</a></li>
+    <li><a href="javascript:void(0)" onclick="showPage('articles')" id="nav-articles">📰 Articles</a></li>
+    <li><a href="javascript:void(0)" onclick="showPage('lingua')" id="nav-lingua">🌍 Lingua Franca</a></li>
+    <li><a href="javascript:void(0)" onclick="showPage('vocab')" id="nav-vocab">📖 Vocabulary</a></li>
+    <li><a href="javascript:void(0)" onclick="showPage('future')" id="nav-future">🔮 Future</a></li>
+    <li><a href="javascript:void(0)" onclick="showPage('podcasts')" id="nav-podcasts">🎙️ Podcasts</a></li>
+  </ul>
+  <div style="display:flex;align-items:center;gap:0.5rem;">
+    <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" title="Toggle light/dark mode">🌙</button>
+    <span class="hamburger" onclick="toggleMenu()">☰</span>
+  </div>
+</nav>
+
+<!-- ===================== HOME PAGE ===================== -->
+<div class="page active" id="page-home">
+  <div class="hero">
+    <div class="hero-grid"></div>
+    <div class="hero-glow"></div>
+    <div class="hero-glow2"></div>
+    <div class="hero-inner">
+      <div class="hero-tag">English 2 · VG2 · Norway</div>
+      <h1>How is <span class="hl">Social Media</span><br>changing the<br><span class="hl2">English language?</span></h1>
+      <p class="hero-sub">From TikTok slang to disappearing grammar rules — explore how digital platforms are reshaping one of the world's most powerful languages, and what that means for all of us.</p>
+      <div class="btn-row">
+        <button class="btn btn-primary" onclick="showPage('articles')">Explore Articles →</button>
+        <button class="btn btn-secondary" onclick="showPage('podcasts')">🎙️ Listen to Podcasts</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="stats-bar">
+    <div class="stats-ticker">
+      <div class="stat-item"><span class="stat-num">1.5B</span><span class="stat-label">English speakers worldwide</span></div>
+      <div class="stat-item"><span class="stat-num">~1,000</span><span class="stat-label">new English words added per year</span></div>
+      <div class="stat-item"><span class="stat-num">56%</span><span class="stat-label">of websites use English</span></div>
+      <div class="stat-item"><span class="stat-num">3.2B</span><span class="stat-label">social media users globally</span></div>
+      <div class="stat-item"><span class="stat-num">7,100+</span><span class="stat-label">languages in the world</span></div>
+      <div class="stat-item"><span class="stat-num">23</span><span class="stat-label">languages go extinct each year</span></div>
+      <!-- repeat for seamless loop -->
+      <div class="stat-item"><span class="stat-num">1.5B</span><span class="stat-label">English speakers worldwide</span></div>
+      <div class="stat-item"><span class="stat-num">~1,000</span><span class="stat-label">new English words added per year</span></div>
+      <div class="stat-item"><span class="stat-num">56%</span><span class="stat-label">of websites use English</span></div>
+      <div class="stat-item"><span class="stat-num">3.2B</span><span class="stat-label">social media users globally</span></div>
+      <div class="stat-item"><span class="stat-num">7,100+</span><span class="stat-label">languages in the world</span></div>
+      <div class="stat-item"><span class="stat-num">23</span><span class="stat-label">languages go extinct each year</span></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="container">
+      <div class="section-label">The Big Picture</div>
+      <h2>Language has always <span class="accent">changed</span> — but never this fast</h2>
+      <p class="section-intro">Social media has created the fastest period of language change in human history. Words that didn't exist five years ago are now in the dictionary. Let's explore how and why.</p>
+
+      <div class="cards">
+        <div class="card fade-in">
+          <div class="card-tag">New Words</div>
+          <h3>TikTok as a Dictionary</h3>
+          <p>Terms like <em>slay</em>, <em>rizz</em>, <em>understood the assignment</em>, <em>no cap</em> and <em>main character energy</em> have jumped from TikTok into everyday speech — and into the Oxford English Dictionary. In 2023, "rizz" was named Oxford's Word of the Year.</p>
+          <a class="card-link" href="javascript:void(0)" onclick="showPage('articles')">Read more →</a>
+        </div>
+        <div class="card fade-in">
+          <div class="card-tag">Grammar</div>
+          <h3>Lowercase as Style</h3>
+          <p>Online writing breaks traditional rules intentionally. Using all lowercase (<em>i can't even</em>), leaving out punctuation, or typing in fragments signals tone and identity. Linguists call this "expressive typography" — it's not a mistake, it's a choice.</p>
+          <a class="card-link" href="javascript:void(0)" onclick="showPage('articles')">Read more →</a>
+        </div>
+        <div class="card fade-in">
+          <div class="card-tag">Emojis</div>
+          <h3>A New Layer of Meaning</h3>
+          <p>Emojis don't replace words — they add emotional tone that written text can't easily show. A "😂" after a statement changes its entire meaning. Some linguists argue emojis function like a paralanguage, similar to tone of voice or facial expressions.</p>
+          <a class="card-link" href="javascript:void(0)" onclick="showPage('articles')">Read more →</a>
+        </div>
+        <div class="card fade-in">
+          <div class="card-tag">Identity</div>
+          <h3>Language as Self-Expression</h3>
+          <p>How you write online signals who you are. Young people use different vocabulary, spelling conventions and punctuation than older users — and they do it deliberately. This is called <em>code-switching</em>: adapting your language to your audience and context.</p>
+          <a class="card-link" href="javascript:void(0)" onclick="showPage('vocab')">Key concept →</a>
+        </div>
+        <div class="card fade-in">
+          <div class="card-tag">Global Spread</div>
+          <h3>AAVE Goes Viral</h3>
+          <p>Many popular English slang terms online originate in African American Vernacular English (AAVE) — words like <em>slay</em>, <em>bussin'</em>, <em>no cap</em>, and <em>tea</em>. Social media spreads these globally, raising important questions about credit, appropriation, and linguistic diversity.</p>
+          <a class="card-link" href="javascript:void(0)" onclick="showPage('articles')">Read more →</a>
+        </div>
+        <div class="card fade-in">
+          <div class="card-tag">Endangered Languages</div>
+          <h3>When English Takes Over</h3>
+          <p>As English dominates the internet, smaller languages lose digital space. Welsh, Māori, Norwegian dialects and hundreds of other languages struggle to survive in the algorithm-driven attention economy. Some are fighting back — but the odds are steep.</p>
+          <a class="card-link" href="javascript:void(0)" onclick="showPage('future')">Future outlook →</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section" style="background: var(--surface); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);">
+    <div class="container">
+      <div class="section-label">Quick Explainer</div>
+      <div class="two-col">
+        <div>
+          <h2>Is social media <span class="accent2">ruining</span> English?</h2>
+          <div class="prose">
+            <p>This is one of the most debated questions in modern linguistics. Older generations often worry that abbreviations, emojis, and slang mean young people can't write "properly." But most linguists disagree.</p>
+            <p><strong>Language change is not language decay.</strong> Every generation adds new words and expressions. Shakespeare invented over 1,700 words. Text speak ("LOL", "OMG") was once considered dangerous — today it's in the dictionary.</p>
+            <p>What social media actually does is <strong>accelerate and spread</strong> language change. A new expression can go from one community to global use in days, instead of decades. That's genuinely new — and genuinely fascinating.</p>
+            <p>The real risk isn't that English is being "ruined." The real risk is that English's global dominance is squeezing out other languages. <em>That's</em> the conversation linguists are most concerned about.</p>
+          </div>
+        </div>
+        <div>
+          <div class="callout">
+            <div class="callout-label">🔬 Linguist's Take</div>
+            <p>"The internet hasn't made us worse at language — it has actually made many people more aware of language as a flexible, creative tool. Young people online are highly sophisticated language users." — Gretchen McCulloch, linguist and author of <em>Because Internet</em></p>
+          </div>
+          <div class="callout warn" style="margin-top: 1.25rem;">
+            <div class="callout-label">⚠️ The Other Side</div>
+            <p>Critics argue that heavy use of informal online writing may affect formal writing skills, especially for academic contexts. Some teachers report students using "u" instead of "you" or missing punctuation in essays. The debate continues.</p>
+          </div>
+          <div class="callout purple" style="margin-top: 1.25rem;">
+            <div class="callout-label">🇳🇴 Norway Context</div>
+            <p>In Norway, the dominance of English on social media (especially gaming, music, and TikTok) is causing linguists to worry about <em>language pressure</em> on Norwegian — particularly Nynorsk. Young Norwegians often code-switch between Norwegian and English mid-sentence.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="container">
+      <div class="section-label">Navigate This Site</div>
+      <h2>What will you <span class="accent">explore?</span></h2>
+      <div class="cards" style="margin-top: 2rem;">
+        <div class="card" style="cursor:pointer" onclick="showPage('articles')">
+          <div style="font-size:2rem; margin-bottom:1rem;">📰</div>
+          <h3>Articles & Deep Dives</h3>
+          <p>Long-form explorations of TikTok language, emoji linguistics, AAVE spread, and what happens when English meets other languages.</p>
+        </div>
+        <div class="card" style="cursor:pointer" onclick="showPage('lingua')">
+          <div style="font-size:2rem; margin-bottom:1rem;">🌍</div>
+          <h3>English as Lingua Franca</h3>
+          <p>How did English become the world's shared language? From British colonialism to Silicon Valley — the full story.</p>
+        </div>
+        <div class="card" style="cursor:pointer" onclick="showPage('vocab')">
+          <div style="font-size:2rem; margin-bottom:1rem;">📖</div>
+          <h3>Key Words & Concepts</h3>
+          <p>All the linguistic terms and internet vocabulary you need to talk about this topic with precision and confidence.</p>
+        </div>
+        <div class="card" style="cursor:pointer" onclick="showPage('future')">
+          <div style="font-size:2rem; margin-bottom:1rem;">🔮</div>
+          <h3>The Future of Language</h3>
+          <p>AI writing tools, language death, English vs. the world — predictions from linguists about where we're headed.</p>
+        </div>
+        <div class="card" style="cursor:pointer" onclick="showPage('podcasts')">
+          <div style="font-size:2rem; margin-bottom:1rem;">🎙️</div>
+          <h3>Podcasts & Resources</h3>
+          <p>Curated podcasts — from BBC Learning English to university research podcasts — all verified and ready to listen.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== ARTICLES PAGE ===================== -->
+<div class="page" id="page-articles">
+  <div class="section">
+    <div class="container">
+      <div class="section-label">Deep Dives</div>
+      <h2>Articles & <span class="accent">Readings</span></h2>
+      <p class="section-intro">Explore the topics in depth. Each article is written at an advanced high school level, suitable for English 2 (VG2).</p>
+
+      <div class="article-grid">
+        <div class="article-card">
+          <div class="article-thumb" style="background: linear-gradient(135deg, #0a0a0f, #1a0a2e); color: #7b2fff;">📱</div>
+          <div class="article-body">
+            <div class="article-meta"><span class="tag">Lexicon</span><span>~8 min read</span></div>
+            <h3>Rizz, Slay, No Cap: How TikTok Became a Dictionary</h3>
+            <p>In 2023, Oxford Dictionaries named "rizz" — meaning charm or charisma — as Word of the Year. It originated in streaming culture and exploded on TikTok. This article examines how the platform accelerates word creation and global adoption.</p>
+            <div style="margin-top: 1.25rem;" class="prose">
+              <p>Social media platforms, and TikTok in particular, have become the fastest engines of vocabulary change the English language has ever seen. A word can be created by one user on a Monday and be understood globally by Friday.</p>
+              <p><strong>How does this work?</strong> TikTok's algorithm connects users based on interests rather than geography. This means a teenager in Birmingham, a student in Lagos, and a surfer in Sydney can all be part of the same linguistic community — sharing, remixing, and spreading the same expressions.</p>
+              <p>Some recent TikTok-born expressions and their meanings:</p>
+            </div>
+            <table class="styled-table">
+              <tr><th>Term</th><th>Meaning</th><th>Origin</th></tr>
+              <tr><td><strong>rizz</strong></td><td>Charm, ability to attract others</td><td>Streamer culture / AAVE</td></tr>
+              <tr><td><strong>slay</strong></td><td>To do something excellently</td><td>Drag/LGBTQ+ / AAVE</td></tr>
+              <tr><td><strong>no cap</strong></td><td>No lie / for real</td><td>AAVE</td></tr>
+              <tr><td><strong>understood the assignment</strong></td><td>Did exactly what was needed</td><td>Twitter/TikTok</td></tr>
+              <tr><td><strong>delulu</strong></td><td>Delusional (used humorously)</td><td>K-pop fandom → TikTok</td></tr>
+              <tr><td><strong>rent free</strong></td><td>Living "rent free" in someone's head — can't stop thinking about it</td><td>Twitter</td></tr>
+              <tr><td><strong>era</strong></td><td>A phase of life (e.g. "in my villain era")</td><td>Taylor Swift fandom → general use</td></tr>
+              <tr><td><strong>lowkey / highkey</strong></td><td>Somewhat / very (as intensifiers)</td><td>AAVE → internet</td></tr>
+            </table>
+            <div class="callout" style="margin-top:1.25rem;">
+              <div class="callout-label">💡 Think About It</div>
+              <p>Notice how many of these words come from AAVE (African American Vernacular English) or LGBTQ+ communities. When mainstream users adopt this language without acknowledging its origins, linguists call it <strong>cultural appropriation of language</strong>. Is it a problem? Can you think of Norwegian examples of similar patterns?</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="article-card">
+          <div class="article-thumb" style="background: linear-gradient(135deg, #0a1a0a, #0a2a1a); color: #00ff96;">😂</div>
+          <div class="article-body">
+            <div class="article-meta"><span class="tag">Semiotics</span><span>~6 min read</span></div>
+            <h3>More Than Words: Emojis, Memes, and the New Language of the Internet</h3>
+            <p>Are emojis a language? Can a meme communicate something a sentence cannot? This article explores the linguistics of visual communication in the digital age.</p>
+            <div style="margin-top: 1.25rem;" class="prose">
+              <p>When the "Face with Tears of Joy" emoji 😂 was named Oxford's Word of the Year in 2015, many people laughed. But linguists took it seriously. Emojis had become so embedded in digital communication that ignoring them was ignoring how people actually write.</p>
+              <p><strong>Emojis as paralanguage:</strong> In face-to-face conversation, we use tone of voice, facial expressions, and gestures to add meaning to our words. Written language traditionally lacks these. Emojis fill that gap. A message like "Yeah, that's fine" means very different things with 😊, 😐, or 🙂 at the end.</p>
+              <p>Interestingly, the same emoji can mean different things across generations. Research from 2021 found that younger users interpret 🙂 as passive-aggressive or even threatening — not friendly — because of how it's used ironically online. This is an example of <strong>semantic shift</strong> happening in real time.</p>
+              <p><strong>Memes as cultural language:</strong> Memes work differently. They rely on shared cultural knowledge — you need to know the original context to understand the joke or message. Linguists see memes as a form of <strong>intertextuality</strong>: meaning built from references to other texts.</p>
+              <p>In 2024, the "Demure" and "Very mindful, very cutesy" trend on TikTok became a global phenomenon within days — demonstrating how internet language can now transcend culture at unprecedented speed.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="article-card">
+          <div class="article-thumb" style="background: linear-gradient(135deg, #1a0a0a, #2a0a0a); color: #ff3cac;">✍️</div>
+          <div class="article-body">
+            <div class="article-meta"><span class="tag">Grammar</span><span>~7 min read</span></div>
+            <h3>Grammar Rules? What Rules? Intentional Deviation Online</h3>
+            <p>Writing "i cant" instead of "I can't" isn't a mistake online — it's a stylistic choice. Explore how social media has transformed our relationship with grammar.</p>
+            <div style="margin-top: 1.25rem;" class="prose">
+              <p>Traditional grammar teachers might despair at social media text. No capital letters. Missing apostrophes. Sentence fragments. Endless ellipses... But linguist Gretchen McCulloch, author of <em>Because Internet</em> (2019), argues that online writers are <em>more</em> conscious of grammar, not less — they're just using it differently.</p>
+              <p><strong>Expressive typography:</strong> The choice to use lowercase signals a casual, intimate, sometimes ironic tone. "im fine" reads very differently from "I'm fine." The lowercase version implies something like the opposite of fine. This is a <em>pragmatic</em> use of typography — using the <em>form</em> of writing to convey meaning.</p>
+              <p><strong>The period problem:</strong> In text messages and online chat, ending a short sentence with a period (full stop) has become a sign of formality, coldness, or even passive aggression. "See you later." feels very different from "see you later" or "see you later!" Research confirms this perception is widespread among younger users.</p>
+              <p><strong>All caps for emotion:</strong> "I CANNOT BELIEVE THIS" uses capitalisation for emphasis, essentially simulating shouting. This is an example of <strong>written prosody</strong> — using spelling and punctuation to represent how speech sounds.</p>
+            </div>
+            <div class="callout purple">
+              <div class="callout-label">📝 Exercise for class</div>
+              <p>Write the same message in three styles: standard formal English, casual online style, and TikTok caption style. Notice how your word choices, punctuation, and even the ideas you express change. What does this tell you about the relationship between language and context?</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="article-card">
+          <div class="article-thumb" style="background: linear-gradient(135deg, #0a0a1a, #0a1a2a); color: #00e5ff;">🌐</div>
+          <div class="article-body">
+            <div class="article-meta"><span class="tag">Endangered Languages</span><span>~9 min read</span></div>
+            <h3>When English Takes Over: Language Loss in the Digital Age</h3>
+            <p>The internet speaks mostly English. For speakers of smaller languages, this creates enormous pressure — and sometimes, language death.</p>
+            <div style="margin-top: 1.25rem;" class="prose">
+              <p>Of the roughly 7,100 languages spoken in the world today, linguists estimate that half will be extinct by 2100. Social media and the internet are accelerating this process — but also, paradoxically, offering new tools for language revival.</p>
+              <p><strong>The digital divide:</strong> Most social media platforms were designed for English. Algorithm-driven recommendation systems favour content in languages with large user bases. A post in Sámi (spoken by the indigenous Sámi people of Norway, Sweden, Finland, and Russia) competes for attention in the same system as a post in English — and almost always loses.</p>
+              <p><strong>The Norwegian case:</strong> Norway has two official written standards — Bokmål and Nynorsk. Nynorsk, used by about 10-15% of the population, is under particular pressure. Young Norwegians increasingly consume English-language content on YouTube, TikTok, and Netflix, leading to what sociolinguists call <strong>language attrition</strong> — the gradual weakening of proficiency in one's native language.</p>
+              <p>English words enter Norwegian through social media constantly: <em>chill, vibe, trigger, share, like, scroll</em> — most Norwegians use these English words even when Norwegian equivalents exist.</p>
+              <p><strong>Is this always bad?</strong> Linguists disagree. Some argue that language contact and borrowing is natural and has always happened. The question is one of <strong>power</strong>: when English words replace Norwegian ones because English dominates media and technology, that is not an equal exchange.</p>
+              <p><strong>Fighting back:</strong> Some communities use social media to revitalise endangered languages. Welsh on TikTok has a thriving community. The Māori language (te reo Māori) has been championed by New Zealand content creators. Even Sámi languages have TikTok presence. These efforts show that digital tools can work both ways.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="article-card" style="grid-column: 1 / -1;">
+          <div class="article-body">
+            <div class="article-meta"><span class="tag">Sociolinguistics</span><span>~10 min read</span></div>
+            <h3>AAVE and the Internet: Credit, Culture, and the Spread of Black Language</h3>
+            <p>Much of the language that defines online English culture has its roots in African American Vernacular English (AAVE). Understanding this is essential to understanding how social media changes language — and who benefits from those changes.</p>
+            <div style="margin-top: 1.25rem;" class="prose">
+              <p>Words like <em>slay</em>, <em>serving looks</em>, <em>tea</em> (meaning gossip), <em>drag</em>, <em>shade</em>, <em>yass</em>, <em>no cap</em>, <em>bussin'</em>, <em>hits different</em>, <em>lowkey</em>, and dozens of other expressions used globally online trace back to AAVE — the dialect spoken by many African Americans — or to Black and LGBTQ+ communities, particularly drag culture and ball culture (as seen in the TV show <em>Pose</em> or the documentary <em>Paris is Burning</em>).</p>
+              <p><strong>How it spreads:</strong> These expressions gain mainstream visibility through social media, often first through Black creators on platforms like Vine, Twitter, and TikTok. They get picked up by non-Black users who may not know their origin — and sometimes those users gain more visibility and revenue from the same content than the original creators did.</p>
+              <p><strong>The credit debate:</strong> In 2021, a viral moment on TikTok sparked major debate when non-Black creators were criticised for using AAVE expressions without acknowledging their origin. This led to broader conversations about <strong>linguistic appropriation</strong> — when the dominant culture adopts the language of a marginalised group, benefits from it, but doesn't credit or support that group.</p>
+              <p><strong>The British dimension:</strong> Research published in 2022 by Dr. Devyani Sharma and colleagues at Queen Mary University of London found that AAVE features were spreading among young Black Londoners via social media — creating a transatlantic Black English influenced by both American and British Black vernacular traditions. This is a fascinating example of <strong>dialect levelling</strong> happening across an ocean.</p>
+            </div>
+            <div class="callout warn">
+              <div class="callout-label">🗣️ Discussion Question</div>
+              <p>Should social media users who adopt language from other cultures acknowledge the origin of those words and expressions? What are the arguments for and against? Is this different from borrowing vocabulary from other languages (like English borrowing from French)?</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== LINGUA FRANCA PAGE ===================== -->
+<div class="page" id="page-lingua">
+  <div class="section">
+    <div class="container">
+      <div class="section-label">History & Context</div>
+      <h2>How English became the world's <span class="accent">shared language</span></h2>
+      <p class="section-intro">English is today spoken by over 1.5 billion people as a first or second language. But this didn't happen by accident — it's the result of centuries of history, power, and technology.</p>
+
+      <div class="timeline">
+        <div class="timeline-item">
+          <div class="timeline-dot"></div>
+          <div class="timeline-year">1600s–1800s</div>
+          <h3>The British Empire</h3>
+          <p>At its peak, the British Empire covered about 24% of the world's land surface and ruled over 400 million people. Wherever the British went — India, Australia, Canada, South Africa, Nigeria, Hong Kong — they brought English with them. Education systems, courts, newspapers, and governments operated in English. Even after independence, many former colonies retained English as an official language because it was neutral between competing local languages or simply deeply embedded in institutions.</p>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-dot" style="background: var(--accent2);"></div>
+          <div class="timeline-year">1900s</div>
+          <h3>The American Century</h3>
+          <p>After World War II, the United States emerged as the world's dominant economic and military power. American English spread through cinema, music (jazz, rock and roll, hip-hop), television, and later computing. The Bretton Woods financial system, the United Nations, NATO, and most international institutions used English. This "soft power" — cultural influence rather than military force — made English feel like the language of opportunity, modernity, and global access.</p>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-dot" style="background: var(--accent3);"></div>
+          <div class="timeline-year">1990s</div>
+          <h3>The Internet is Born in English</h3>
+          <p>The World Wide Web was invented by British scientist Tim Berners-Lee, and almost all early internet content was in English. The major tech companies — Google, Amazon, Facebook (Meta), Apple, Microsoft — were American. The programming languages used to build websites and software (Python, JavaScript, HTML) use English keywords. This meant that to participate in the digital revolution, you needed English.</p>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-dot"></div>
+          <div class="timeline-year">2000s–2010s</div>
+          <h3>Social Media Globalises English</h3>
+          <p>Facebook, Twitter, YouTube, and later Instagram were all designed for English first. As they spread globally, they brought English with them — not just as a language to use, but as a cultural context. English became the language of viral content, internet humour, and digital culture. Even in countries where English is rarely spoken, people used English hashtags, memes, and references to participate in global online conversations.</p>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-dot" style="background: var(--accent2);"></div>
+          <div class="timeline-year">2020s</div>
+          <h3>AI Reinforces English Dominance</h3>
+          <p>Large AI language models like ChatGPT (released 2022) were trained overwhelmingly on English text — because most internet content is in English. This means AI tools work better, more reliably, and with more nuance in English than in other languages. As AI becomes embedded in work, education, and daily life, this creates a new structural advantage for English speakers — and a new pressure on other languages.</p>
+        </div>
+      </div>
+
+      <hr class="divider">
+
+      <h2>What is a <span class="accent2">lingua franca</span>?</h2>
+      <div class="two-col" style="margin-top: 2rem;">
+        <div class="prose">
+          <p>The term <strong>lingua franca</strong> (from Italian, meaning "Frankish language") originally referred to a pidgin language used for trade around the Mediterranean. Today it means any language used as a common means of communication between people who don't share a native language.</p>
+          <p>Throughout history, different languages have served as lingua francas in different regions: Latin in medieval Europe, Arabic across the Islamic world, Persian in South Asia and Central Asia, French in 18th–19th century diplomacy, and Swahili across East Africa.</p>
+          <p>English is unusual because it has become a <em>global</em> lingua franca — used across virtually every domain (science, business, aviation, diplomacy, popular culture) on every continent. Researchers call this <strong>English as a Lingua Franca (ELF)</strong>.</p>
+          <p>Important: most English communication today happens between non-native speakers. An engineer in Tokyo talks to a supplier in Brazil in English. A scientist in Norway publishes research in English for readers in Kenya and South Korea. This means "standard" English is increasingly being redefined by its non-native speakers.</p>
+        </div>
+        <div>
+          <div class="callout">
+            <div class="callout-label">📊 Key Facts</div>
+            <p><strong>~380 million</strong> people speak English as a first language.<br><br>
+            <strong>~1.1 billion</strong> speak it as a second language — almost three times more.<br><br>
+            This means English belongs more to its second-language speakers than to its native speakers. This is historically unprecedented.</p>
+          </div>
+          <div class="callout purple" style="margin-top: 1.25rem;">
+            <div class="callout-label">🇳🇴 Norway's English</div>
+            <p>Norway consistently ranks as one of the world's top countries for English proficiency among non-native speakers (EF English Proficiency Index). This is partly due to subtitled (not dubbed) TV and film, high internet use, and a school system that prioritises English. Norwegian young people often report feeling more comfortable writing in English than in Norwegian online.</p>
+          </div>
+        </div>
+      </div>
+
+      <hr class="divider">
+
+      <h2>Varieties of <span class="accent">World Englishes</span></h2>
+      <p class="section-intro">English isn't one language — it's a family of related varieties. Linguist Braj Kachru described this using a model of three concentric circles.</p>
+
+      <table class="styled-table">
+        <tr><th>Circle</th><th>Description</th><th>Examples</th><th>Approx. Speakers</th></tr>
+        <tr>
+          <td><span class="badge badge-cyan">Inner Circle</span></td>
+          <td>Countries where English is the primary native language</td>
+          <td>UK, USA, Australia, Canada, New Zealand</td>
+          <td>~380 million</td>
+        </tr>
+        <tr>
+          <td><span class="badge badge-green">Outer Circle</span></td>
+          <td>Countries where English is an official language due to colonial history</td>
+          <td>India, Nigeria, South Africa, Singapore, Kenya</td>
+          <td>~300–500 million</td>
+        </tr>
+        <tr>
+          <td><span class="badge badge-purple">Expanding Circle</span></td>
+          <td>Countries where English is a foreign language, learned for international use</td>
+          <td>Norway, China, Brazil, Germany, Japan</td>
+          <td>~600 million–1 billion</td>
+        </tr>
+      </table>
+
+      <div class="callout warn" style="margin-top: 2rem;">
+        <div class="callout-label">⚠️ The Power Question</div>
+        <p>English's status as a lingua franca is not neutral. It gives native English speakers an enormous advantage in global business, academia, and diplomacy. A French scientist must write in English to be read globally. A Norwegian student must take an English proficiency test to attend an American university. Critics argue this is a form of <strong>linguistic imperialism</strong> — the imposition of one language's dominance at the expense of others.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== VOCABULARY PAGE ===================== -->
+<div class="page" id="page-vocab">
+  <div class="section">
+    <div class="container">
+      <div class="section-label">Reference</div>
+      <h2>Key Words & <span class="accent">Concepts</span></h2>
+      <p class="section-intro">Master this vocabulary to discuss language and social media with precision. These terms are used by linguists, journalists, and researchers — and will elevate your English 2 essays and discussions.</p>
+
+      <div class="section-label" style="margin-top:2rem;">Linguistics Core Terms</div>
+      <div class="vocab-grid" style="margin-top: 1rem;">
+        <div class="vocab-card">
+          <div class="vocab-word">neologism</div>
+          <div class="vocab-pos">noun</div>
+          <div class="vocab-def">A newly coined word or expression. Social media produces neologisms at an unprecedented rate.</div>
+          <div class="vocab-example">"'Rizz' is a recent neologism that entered the Oxford English Dictionary in 2023."</div>
+        </div>
+        <div class="vocab-card">
+          <div class="vocab-word">semantic shift</div>
+          <div class="vocab-pos">noun phrase</div>
+          <div class="vocab-def">When the meaning of a word changes over time. Can be broadening, narrowing, or complete reversal (pejoration/amelioration).</div>
+          <div class="vocab-example">"The word 'sick' has undergone semantic shift — it now often means excellent rather than ill in youth slang."</div>
+        </div>
+        <div class="vocab-card">
+          <div class="vocab-word">code-switching</div>
+          <div class="vocab-pos">noun / verb</div>
+          <div class="vocab-def">Switching between languages, dialects, or registers depending on the social context or audience.</div>
+          <div class="vocab-example">"Norwegian teenagers often code-switch between Norwegian and English in the same sentence online."</div>
+        </div>
+        <div class="vocab-card">
+          <div class="vocab-word">sociolinguistics</div>
+          <div class="vocab-pos">noun</div>
+          <div class="vocab-def">The study of how language varies and changes in relation to social factors like age, gender, class, ethnicity, and geography.</div>
+          <div class="vocab-example">"Sociolinguistics helps explain why TikTok users and their grandparents use English so differently."</div>
+        </div>
+        <div class="vocab-card">
+          <div class="vocab-word">dialect</div>
+          <div class="vocab-pos">noun</div>
+          <div class="vocab-def">A variety of a language spoken by a particular group, distinguished by vocabulary, grammar, and pronunciation.</div>
+          <div class="vocab-example">"AAVE (African American Vernacular English) is a dialect of English with its own consistent grammatical rules."</div>
+        </div>
+        <div class="vocab-card">
+          <div class="vocab-word">register</div>
+          <div class="vocab-pos">noun</div>
+          <div class="vocab-def">A variety of language used for a particular purpose or in a particular social setting (e.g. formal, informal, technical).</div>
+          <div class="vocab-example">"Social media has created new registers — like 'TikTok caption language' — that are different from both formal and traditional informal English."</div>
+        </div>
+        <div class="vocab-card">
+          <div class="vocab-word">lingua franca</div>
+          <div class="vocab-pos">noun</div>
+          <div class="vocab-def">A language systematically used to communicate between people who don't share a native language.</div>
+          <div class="vocab-example">"English functions as a lingua franca in international science, business, and aviation."</div>
+        </div>
+        <div class="vocab-card">
+          <div class="vocab-word">language attrition</div>
+          <div class="vocab-pos">noun phrase</div>
+          <div class="vocab-def">The gradual loss of proficiency in a language, often because another language is used more frequently.</div>
+          <div class="vocab-example">"Linguists worry that heavy exposure to English content may cause language attrition in smaller language communities."</div>
+        </div>
+        <div class="vocab-card">
+          <div class="vocab-word">linguistic imperialism</div>
+          <div class="vocab-pos">noun phrase</div>
+          <div class="vocab-def">The spread and dominance of one language (often English) over others, linked to economic and political power.</div>
+          <div class="vocab-example">"Critics argue that the English-only default of most tech platforms is a form of linguistic imperialism."</div>
+        </div>
+        <div class="vocab-card">
+          <div class="vocab-word">lexical borrowing</div>
+          <div class="vocab-pos">noun phrase</div>
+          <div class="vocab-def">When a language adopts a word from another language. Also called loanwords or borrowings.</div>
+          <div class="vocab-example">"Norwegian has borrowed 'chill', 'vibe', and 'scroll' from English via social media — a form of lexical borrowing."</div>
+        </div>
+        <div class="vocab-card">
+          <div class="vocab-word">prescriptivism</div>
+          <div class="vocab-pos">noun</div>
+          <div class="vocab-def">The view that language should follow strict, pre-defined rules. Opposite of descriptivism.</div>
+          <div class="vocab-example">"Grammar police online often take a prescriptivist stance, insisting that there is one 'correct' way to write."</div>
+        </div>
+        <div class="vocab-card">
+          <div class="vocab-word">descriptivism</div>
+          <div class="vocab-pos">noun</div>
+          <div class="vocab-def">The approach of studying language as it is actually used, without judging it as right or wrong. Most modern linguists are descriptivists.</div>
+          <div class="vocab-example">"A descriptivist would say that using 'literally' to mean 'very' is not wrong — it simply reflects how the word is evolving."</div>
+        </div>
+      </div>
+
+      <hr class="divider">
+
+      <div class="section-label">Internet & Social Media Language</div>
+      <div class="vocab-grid" style="margin-top: 1rem;">
+        <div class="vocab-card">
+          <div class="vocab-word">meme</div>
+          <div class="vocab-pos">noun</div>
+          <div class="vocab-def">An image, video, phrase, or format that spreads virally online, often remixed to carry new meanings. Coined by biologist Richard Dawkins in 1976 to describe how ideas spread like genes.</div>
+          <div class="vocab-example">"The 'This is fine' dog meme has become a shorthand for calm acceptance of a terrible situation."</div>
+        </div>
+        <div class="vocab-card">
+          <div class="vocab-word">hashtag</div>
+          <div class="vocab-pos">noun</div>
+          <div class="vocab-def">A word or phrase preceded by # used to categorise content on social media. Has become a form of commentary and political action (#BlackLivesMatter, #MeToo).</div>
+          <div class="vocab-example">"The #MeToo hashtag transformed a Twitter conversation into a global social movement."</div>
+        </div>
+        <div class="vocab-card">
+          <div class="vocab-word">emoji</div>
+          <div class="vocab-pos">noun</div>
+          <div class="vocab-def">A small digital image or icon used to express an emotion, idea, or object in electronic communication. From Japanese: 絵 (e = picture) + 文字 (moji = character).</div>
+          <div class="vocab-example">"Linguists study emojis as a form of paralanguage — adding emotional nuance to written text."</div>
+        </div>
+        <div class="vocab-card">
+          <div class="vocab-word">paralanguage</div>
+          <div class="vocab-pos">noun</div>
+          <div class="vocab-def">Non-verbal elements of communication that convey meaning alongside words: tone of voice, facial expressions, gestures — and in writing, punctuation, capitalisation, and emojis.</div>
+          <div class="vocab-example">"Ending a message with a period in casual chat functions as paralanguage signalling coldness or finality."</div>
+        </div>
+        <div class="vocab-card">
+          <div class="vocab-word">viral</div>
+          <div class="vocab-pos">adjective</div>
+          <div class="vocab-def">Content that spreads very rapidly across the internet, reaching large audiences through sharing. The metaphor compares the spread of content to a biological virus.</div>
+          <div class="vocab-example">"When a new slang term goes viral on TikTok, it can enter common usage globally within days."</div>
+        </div>
+        <div class="vocab-card">
+          <div class="vocab-word">netspeak</div>
+          <div class="vocab-pos">noun</div>
+          <div class="vocab-def">The informal language used in online communication, characterised by abbreviations, emoticons, unconventional spelling, and new vocabulary. Term coined by linguist David Crystal.</div>
+          <div class="vocab-example">"Crystal argued that netspeak is not a threat to English but a creative new dimension of it."</div>
+        </div>
+        <div class="vocab-card">
+          <div class="vocab-word">AAVE</div>
+          <div class="vocab-pos">abbreviation</div>
+          <div class="vocab-def">African American Vernacular English. A dialect of English with its own grammar, vocabulary, and phonology, spoken by many African Americans. Source of much of the slang that dominates social media.</div>
+          <div class="vocab-example">"Terms like 'no cap', 'slay', and 'on fleek' originate in AAVE before spreading to mainstream internet culture."</div>
+        </div>
+        <div class="vocab-card">
+          <div class="vocab-word">algorithmic amplification</div>
+          <div class="vocab-pos">noun phrase</div>
+          <div class="vocab-def">The way social media algorithms promote certain content — and by extension, certain linguistic styles and communities — over others.</div>
+          <div class="vocab-example">"English content benefits from algorithmic amplification because most training data and user bases are English-dominant."</div>
+        </div>
+        <div class="vocab-card">
+          <div class="vocab-word">linguistic appropriation</div>
+          <div class="vocab-pos">noun phrase</div>
+          <div class="vocab-def">When speakers of a dominant language or culture adopt words, phrases, or styles from a marginalised group without acknowledgment or credit.</div>
+          <div class="vocab-example">"The mainstream adoption of AAVE online is often cited as an example of linguistic appropriation."</div>
+        </div>
+        <div class="vocab-card">
+          <div class="vocab-word">digital native</div>
+          <div class="vocab-pos">noun</div>
+          <div class="vocab-def">A person who has grown up with the internet and digital technology as a normal part of life. Originally coined by Marc Prensky in 2001 — though the concept has since been criticised as oversimplified.</div>
+          <div class="vocab-example">"Digital natives often have very different intuitions about writing norms than those who learned to write before social media."</div>
+        </div>
+        <div class="vocab-card">
+          <div class="vocab-word">ephemeral content</div>
+          <div class="vocab-pos">noun phrase</div>
+          <div class="vocab-def">Content designed to disappear after a short time (e.g. Instagram Stories, Snapchats). The temporary nature shapes the language used — more casual, unpolished, immediate.</div>
+          <div class="vocab-example">"Ephemeral content encourages a different writing style than permanent posts — more like speech, less like edited text."</div>
+        </div>
+        <div class="vocab-card">
+          <div class="vocab-word">performative writing</div>
+          <div class="vocab-pos">noun phrase</div>
+          <div class="vocab-def">Writing that is aware of its audience and performs identity, emotion, or attitude — common in social media captions and comments.</div>
+          <div class="vocab-example">"'I'm literally crying 💀' is an example of performative writing — it signals amusement or relatability rather than literal distress."</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== FUTURE PAGE ===================== -->
+<div class="page" id="page-future">
+  <div class="section">
+    <div class="container">
+      <div class="section-label">Looking Ahead</div>
+      <h2>The Future of <span class="accent">English</span> & Digital Language</h2>
+      <p class="section-intro">What will happen to English — and to other languages — in the age of AI, social media, and global connectivity? Linguists have some predictions.</p>
+
+      <div class="prediction-grid">
+        <div class="prediction-card fade-in">
+          <div class="icon">🤖</div>
+          <h3>AI Changes Everything</h3>
+          <p>AI writing assistants (ChatGPT, Gemini, Claude) are changing how people write. They tend to produce "standard" English, which may flatten linguistic diversity. But they also translate languages better than ever, potentially empowering non-English speakers.</p>
+        </div>
+        <div class="prediction-card fade-in">
+          <div class="icon">📉</div>
+          <h3>Language Death Accelerates</h3>
+          <p>Linguists predict 50% of all languages could be gone by 2100. Social media and the global English internet accelerate this. When a language loses its economic and digital value, young speakers stop using it — even at home.</p>
+        </div>
+        <div class="prediction-card fade-in">
+          <div class="icon">🌱</div>
+          <h3>Language Revival Is Possible</h3>
+          <p>Welsh, Māori, and Hebrew show that languages can be revived. TikTok content in endangered languages reaches young audiences globally. Communities that create compelling digital content in their languages can attract new speakers.</p>
+        </div>
+        <div class="prediction-card fade-in">
+          <div class="icon">🔀</div>
+          <h3>English Will Keep Changing</h3>
+          <p>English itself is not static. Regional varieties — Indian English, Nigerian English, Singaporean English — are growing in confidence and influence. The idea of one "correct" English is weakening. "Global English" may look very different from British or American English.</p>
+        </div>
+        <div class="prediction-card fade-in">
+          <div class="icon">🌏</div>
+          <h3>Mandarin & Spanish Push Back</h3>
+          <p>Chinese social media platforms (WeChat, Douyin/TikTok's Chinese version) are building parallel digital ecosystems in Mandarin. Spanish is the fastest-growing language on the US internet. English may face real competition for the first time in decades.</p>
+        </div>
+        <div class="prediction-card fade-in">
+          <div class="icon">👾</div>
+          <h3>New Digital Languages</h3>
+          <p>Online communication continues to evolve: GIFs, reaction images, voice notes, short video — these are all changing what "language" even means. Future communication may rely less on text altogether. The question is: will AI and machines define the linguistic norms?</p>
+        </div>
+      </div>
+
+      <hr class="divider">
+
+      <h2>What happens when <span class="accent2">English takes over</span> other languages?</h2>
+      <div class="two-col" style="margin-top:2rem;">
+        <div class="prose">
+          <p>The relationship between English and other languages is not a simple story of replacement. It's more complex — and more troubling in some ways.</p>
+          <p><strong>Domain loss:</strong> The first sign of English taking over is when a language loses ground in important areas of life — first in business and technology, then in academia, then in entertainment. When young people can't discuss science, technology, or pop culture in their native language, it begins to feel inadequate for modern life.</p>
+          <p><strong>Code-mixing:</strong> Many languages today are merging with English rather than disappearing. "Hinglish" (Hindi + English), "Spanglish" (Spanish + English), "Franglais" (French + English), and "Norwenglish" are all real phenomena. Is this enrichment or erosion? Linguists debate this intensely.</p>
+          <p><strong>Linguistic inferiority complex:</strong> When English dominates digital life, speakers of other languages can start to feel their language is "lesser." Norwegian words feel less professional. Smaller languages feel embarrassing. This attitude — called <strong>language shame</strong> or <strong>linguistic insecurity</strong> — can accelerate language loss from the inside.</p>
+          <p><strong>The academy vs. the internet:</strong> Formal language organisations (like Akademiet for de nordiske språk in Scandinavia or the Académie française in France) try to defend their languages by coining native equivalents for English loanwords. But social media users often ignore these efforts and just adopt the English word anyway.</p>
+        </div>
+        <div>
+          <div class="callout warn">
+            <div class="callout-label">⚡ Recent Example: France</div>
+            <p>In 2023, France passed a law banning the use of English gaming terms in official government communications. Words like "streamer", "esport", and "cloud computing" must now have French equivalents in official contexts. Critics called this futile; supporters called it necessary language defence. The debate illustrates the tension between organic language change and deliberate language policy.</p>
+          </div>
+          <div class="callout" style="margin-top: 1.25rem;">
+            <div class="callout-label">🇳🇴 Norway's Language Policy</div>
+            <p>Norway has an official language policy that tries to maintain both Bokmål and Nynorsk as equal written standards. But critics argue the policy doesn't address the real challenge: that young Norwegians spend more time consuming English content online than Norwegian content. Language laws cannot compete with algorithms.</p>
+          </div>
+          <div class="callout purple" style="margin-top: 1.25rem;">
+            <div class="callout-label">💬 Quote to Discuss</div>
+            <p>"When you lose a language, you lose a way of seeing the world. Every language encodes a unique set of concepts, histories, and ways of making meaning. Language death is not just a cultural loss — it's a cognitive one." — David Crystal, linguist</p>
+          </div>
+        </div>
+      </div>
+
+      <hr class="divider">
+      <div class="section-label">For Your Essay</div>
+      <h2>Discussion <span class="accent">Questions</span></h2>
+      <div class="cards" style="margin-top:1.5rem;">
+        <div class="card">
+          <div class="card-tag">Analytical</div>
+          <h3>Question 1</h3>
+          <p>"Social media is democratising language change." Do you agree? Consider who gets to create new words and expressions, and who benefits from their spread.</p>
+        </div>
+        <div class="card">
+          <div class="card-tag">Critical</div>
+          <h3>Question 2</h3>
+          <p>Is the global dominance of English a form of cultural imperialism, or simply the result of historical and technological circumstance? Can it be both?</p>
+        </div>
+        <div class="card">
+          <div class="card-tag">Personal</div>
+          <h3>Question 3</h3>
+          <p>How has your own experience of English online — through gaming, TikTok, YouTube, or music — affected how you use Norwegian? Can you think of specific examples?</p>
+        </div>
+        <div class="card">
+          <div class="card-tag">Future</div>
+          <h3>Question 4</h3>
+          <p>In 50 years, will English still be the world's lingua franca? What developments — political, technological, or demographic — might challenge its position?</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== PODCASTS PAGE ===================== -->
+<div class="page" id="page-podcasts">
+  <div class="section">
+    <div class="container">
+      <div class="section-label">Listen & Learn</div>
+      <h2>Podcast <span class="accent">Resources</span></h2>
+      <p class="section-intro">These curated podcasts explore language, social media, and digital communication from linguistic, cultural, and educational perspectives. All are suitable for English 2 (VG2) students.</p>
+
+      <div class="callout purple" style="margin-bottom:2.5rem;">
+        <div class="callout-label">📌 How to use these</div>
+        <p>For each podcast, try to listen actively: take notes on key claims and examples, notice the register and vocabulary used, and think about whether you agree with the speakers. Consider how their arguments connect to topics you've read about on this site.</p>
+      </div>
+
+      <div class="podcast-card">
+        <div class="podcast-icon" style="background: linear-gradient(135deg, #1a1a3a, #2a1a5a);">🎓</div>
+        <div>
+          <div class="podcast-source">University of Edinburgh · PPLS Perspectives Podcast</div>
+          <h3>How is Social Media Shaping Language?</h3>
+          <p>Sociolinguist Dr Christian Ilbury and PhD student Gilly Marchini discuss how digital culture and technology — Twitter, TikTok, messaging apps — change slang, grammar, and how we signal identity online. Dr Ilbury is a leading researcher in digital sociolinguistics. Academic but very accessible. <span class="badge badge-cyan">Verified ✓</span></p>
+          <div class="podcast-links">
+            <a href="https://ppls.ed.ac.uk/ppls-perspectives-podcast/season-2-ppls-perspectives-podcast/episode-six-how-is-social-media" target="_blank" class="pod-link pod-link-primary">🌐 Episode Page</a>
+            <a href="https://open.spotify.com/episode/3wNsAHxwgLbe9147PJw01n" target="_blank" class="pod-link pod-link-secondary">🎵 Spotify</a>
+            <a href="https://podcasts.apple.com/gb/podcast/episode-six-how-is-social-media-shaping-language/id1719814353?i=1000698719870" target="_blank" class="pod-link pod-link-secondary">🍎 Apple Podcasts</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="podcast-card">
+        <div class="podcast-icon" style="background: linear-gradient(135deg, #2a1a0a, #3a2a0a);">⚖️</div>
+        <div>
+          <div class="podcast-source">Slate Debates Podcast</div>
+          <h3>Is Social Media Changing English?</h3>
+          <p>A linguist and a cultural critic debate whether platforms like Twitter and texting are making English "worse", "childlike", or simply different. Covers hashtags, abbreviations, and the politics of prescriptivism. Great for understanding both sides of the debate.</p>
+          <div class="podcast-links">
+            <a href="https://podcasts.apple.com/ca/podcast/is-social-media-changing-english/id500673866?i=1000424670395" target="_blank" class="pod-link pod-link-primary">🍎 Apple Podcasts</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="podcast-card">
+        <div class="podcast-icon" style="background: linear-gradient(135deg, #0a1a2a, #0a2a3a);">📻</div>
+        <div>
+          <div class="podcast-source">The 21st Show · Illinois Public Radio</div>
+          <h3>How Social Media is Changing Language</h3>
+          <p>Talk-show format episode featuring "EtymologyNerd" about how memes, emojis, and online communities accelerate language change, spread new slang, and cross borders. Engaging, fast-paced, accessible to general audiences.</p>
+          <div class="podcast-links">
+            <a href="https://podcasts.apple.com/us/podcast/best-of-how-social-media-is-changing-language/id1084405213?i=1000731186548" target="_blank" class="pod-link pod-link-primary">🍎 Apple Podcasts</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="podcast-card">
+        <div class="podcast-icon" style="background: linear-gradient(135deg, #0a1a0a, #0a2a1a);">🇬🇧</div>
+        <div>
+          <div class="podcast-source">BBC Learning English · 6 Minute English</div>
+          <h3>Do Emojis Make Language Better?</h3>
+          <p>Short, ELT-friendly discussion (6 minutes!) about emojis as a new layer of meaning in written English. Introduces terms like "grammar police" and debates whether emojis improve or damage language. Perfect for listening practice. <strong>Specifically designed for English learners.</strong></p>
+          <div class="podcast-links">
+            <a href="https://www.bbc.co.uk/learningenglish/features/6-minute-english_2022/ep-220901" target="_blank" class="pod-link pod-link-primary">🌐 BBC Learning English</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="podcast-card">
+        <div class="podcast-icon" style="background: linear-gradient(135deg, #1a0a1a, #2a0a2a);">😊</div>
+        <div>
+          <div class="podcast-source">BBC Learning English · 6 Minute English</div>
+          <h3>The Rise of the Emoji</h3>
+          <p>Earlier 6 Minute English episode tracing why emojis and emoticons became popular and what that suggests about changes in written English tone and emotion. Pairs well with the "Do Emojis Make Language Better?" episode above. Suitable for all levels.</p>
+          <div class="podcast-links">
+            <a href="https://www.bbc.co.uk/learningenglish/features/6-minute-english/ep-170323" target="_blank" class="pod-link pod-link-primary">🌐 BBC Learning English</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="podcast-card">
+        <div class="podcast-icon" style="background: linear-gradient(135deg, #1a1a0a, #2a2a0a);">🗣️</div>
+        <div>
+          <div class="podcast-source">Spotify Podcast</div>
+          <h3>How Social Media Shapes the Way We Speak</h3>
+          <p>General-audience episode about how platforms like TikTok and Instagram influence pronunciation, catchphrases, and intergenerational differences in English. Covers the gap between how older and younger generations communicate online.</p>
+          <div class="podcast-links">
+            <a href="https://open.spotify.com/episode/2mPnClV8eNRAqznVaGSuI4" target="_blank" class="pod-link pod-link-primary">🎵 Spotify</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="podcast-card">
+        <div class="podcast-icon" style="background: linear-gradient(135deg, #1a0a2a, #2a0a3a);">🔬</div>
+        <div>
+          <div class="podcast-source">Lingthusiasm · Linguistics Podcast</div>
+          <h3>Internet Language Episodes (Series)</h3>
+          <p>Hosted by linguists Gretchen McCulloch (author of <em>Because Internet</em>) and Lauren Gawne, Lingthusiasm regularly explores internet linguistics: tone in texting, meme grammar, online discourse markers. Funny, smart, and accessible. Start with any episode tagged "internet language."</p>
+          <div class="podcast-links">
+            <a href="https://lingthusiasm.com" target="_blank" class="pod-link pod-link-primary">🌐 Lingthusiasm Website</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="podcast-card">
+        <div class="podcast-icon" style="background: linear-gradient(135deg, #0a1a1a, #0a2a2a);">🌐</div>
+        <div>
+          <div class="podcast-source">Language on the Move Podcast</div>
+          <h3>Digital Communication & Multilingualism (Series)</h3>
+          <p>This applied sociolinguistics podcast includes discussions of multilingual and online communication — useful for seeing how social media influences English in global, multilingual contexts. Strong academic content, connects language to social justice and policy. Highly relevant for the English-and-other-languages discussion.</p>
+          <div class="podcast-links">
+            <a href="https://languageonthemove.com/podcast/" target="_blank" class="pod-link pod-link-primary">🌐 Language on the Move</a>
+          </div>
+        </div>
+      </div>
+
+      <hr class="divider">
+
+      <div class="section-label">Further Reading</div>
+      <h2>Books & <span class="accent">Articles</span></h2>
+      <div class="cards" style="margin-top: 1.5rem;">
+        <div class="card">
+          <div class="card-tag">Book</div>
+          <h3>Because Internet — Gretchen McCulloch (2019)</h3>
+          <p>The definitive book on internet language, by a linguist who argues that online writing is creative, complex, and worthy of serious study. Funny, readable, and incredibly relevant. Highly recommended for English 2 students.</p>
+        </div>
+        <div class="card">
+          <div class="card-tag">Book</div>
+          <h3>Language and the Internet — David Crystal (2001)</h3>
+          <p>An early but still highly relevant look at how internet communication differs from speech and writing. Crystal argues that "netspeak" is a new dimension of English, not a corruption of it.</p>
+        </div>
+        <div class="card">
+          <div class="card-tag">Article</div>
+          <h3>"How TikTok Is Changing the English Language" — The Atlantic (2022)</h3>
+          <p>Accessible journalism exploring how TikTok's For You Page algorithm creates global linguistic communities, and why English-based slang travels faster than ever before. Search the title to find it.</p>
+        </div>
+        <div class="card">
+          <div class="card-tag">Article</div>
+          <h3>"Stop Stealing Black English" — The New York Times (2020)</h3>
+          <p>A powerful opinion piece on how AAVE expressions are adopted and credited — or not — by mainstream white internet culture. Essential reading for the linguistic appropriation discussion.</p>
+        </div>
+        <div class="card">
+          <div class="card-tag">Website</div>
+          <h3>OED Word of the Year (Annual)</h3>
+          <p>The Oxford English Dictionary's annual Word of the Year announcement is a fascinating snapshot of language change. Past winners: "goblin mode" (2022), "rizz" (2023). Visit <a href="https://www.oed.com" target="_blank" style="color:var(--accent)">oed.com</a> to explore.</p>
+        </div>
+        <div class="card">
+          <div class="card-tag">Website</div>
+          <h3>Know Your Meme</h3>
+          <p>A comprehensive archive of internet memes and slang with etymological explanations. Useful for tracing where specific terms and expressions come from. Visit <a href="https://knowyourmeme.com" target="_blank" style="color:var(--accent)">knowyourmeme.com</a>.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <strong>LanguageEvolved</strong> · Made for English 2 (VG2) · Norway<br>
+  <span style="margin-top:0.5rem; display:block;">Content is for educational purposes. Links open in new tabs.</span>
+  <span style="margin-top:1rem; display:block; border-top: 1px solid var(--border); padding-top:1rem; color: var(--text-dim);">Created by <strong style="color:var(--accent)">Barbara Anna Zielonka</strong> · Nannestad High School</span>
+</footer>
+
+<script>
+  function toggleTheme() {
+    const isLight = document.body.classList.toggle('light');
+    document.getElementById('themeToggle').textContent = isLight ? '🌙' : '☀️';
+    localStorage.setItem('theme', isLight ? 'light' : 'dark');
+  }
+
+  // Load saved theme
+  if (localStorage.getItem('theme') === 'light') {
+    document.body.classList.add('light');
+    document.getElementById('themeToggle').textContent = '🌙';
+  }
+
+  function showPage(id) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
+    document.getElementById('page-' + id).classList.add('active');
+    document.getElementById('nav-' + id).classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    // Close mobile menu
+    document.getElementById('navLinks').classList.remove('open');
+  }
+
+  function toggleMenu() {
+    document.getElementById('navLinks').classList.toggle('open');
+  }
+
+  // Fade-in on scroll
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
